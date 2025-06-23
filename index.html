@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小羊和小杜的南京之约</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF85A2', // 可爱粉色
+                        secondary: '#7EB6FF', // 柔和蓝色
+                        accent: '#FFD166', // 温暖黄色
+                        light: '#FFF5F7', // 浅粉色背景
+                        dark: '#5B4A6F', // 深紫色文本
+                        njRed: '#C41E3A', // 南京红
+                        njBlue: '#1E4D92', // 南京蓝
+                        njGold: '#D4AF37', // 南京金
+                    },
+                    fontFamily: {
+                        cute: ['"Comic Sans MS"', '"Marker Felt"', 'Arial', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .day-card {
+                @apply bg-white rounded-xl shadow-lg p-5 mb-5 transition-all duration-300 hover:shadow-xl;
+            }
+            .day-header {
+                @apply flex items-center justify-between mb-4;
+            }
+            .day-number {
+                @apply bg-primary text-white rounded-full w-10 h-10 flex items-center justify-center font-bold;
+            }
+            .day-title {
+                @apply text-xl font-bold text-dark;
+            }
+            .activity {
+                @apply flex items-start mb-3 pl-2 border-l-4 border-secondary/50;
+            }
+            .activity-time {
+                @apply text-sm font-medium text-secondary mr-3 min-w-[60px];
+            }
+            .activity-desc {
+                @apply text-dark;
+            }
+            .budget-item {
+                @apply flex justify-between items-center p-2 border-b border-gray-100;
+            }
+            .budget-label {
+                @apply text-dark;
+            }
+            .budget-amount {
+                @apply font-medium;
+            }
+            .btn-primary {
+                @apply bg-primary hover:bg-primary/90 text-white font-bold py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105;
+            }
+            .btn-secondary {
+                @apply bg-secondary hover:bg-secondary/90 text-white font-bold py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105;
+            }
+            .reminder {
+                @apply bg-accent/20 border-l-4 border-accent p-4 rounded-r-lg mb-4;
+            }
+            .nav-link {
+                @apply flex items-center p-3 rounded-lg transition-all duration-300 hover:bg-primary/10;
+            }
+            .nav-link.active {
+                @apply bg-primary/20 font-bold;
+            }
+            .nj-hero {
+                background-image: url('https://picsum.photos/id/1015/1200/400');
+                background-size: cover;
+                background-position: center;
+            }
+            .nj-icon {
+                @apply text-njRed;
+            }
+            .nj-card {
+                @apply bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg;
+            }
+            .nj-footer {
+                background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSI3MHB4IiB2aWV3Qm94PSIwIDAgMTI4MCAxNDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zz4+PGcgZmlsbD0iIzVCNEE2RiI+PHBhdGggZD0iTTAgMGgxMjgwVjBoLTEyODB6IiBmaWxsLW9wYWNpdHk9Ii4yIi8+PHBhdGggZD0iTTAgMGgxMjgwVjBoLTEyODB6IiBmaWxsLW9wYWNpdHk9Ii4yIi8+PHBhdGggZD0iTTAgMzRoMTI4MHYzOEgweiIvPjxwYXRoIGQ9Ik0wIDBoMTI4MHYzOEgweiIvPjxwYXRoIGQ9Ik0wIDBoMTI4MHYxNEgweiIvPjwvZz48L3N2Zz4=');
+                background-repeat: no-repeat;
+                background-position: top;
+            }
+        }
+    </style>
+</head>
+<body class="bg-light font-cute min-h-screen">
+    <!-- 顶部导航栏 -->
+    <header class="bg-white shadow-md fixed top-0 left-0 right-0 z-10 transition-all duration-300" id="navbar">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <i class="fa-solid fa-heart text-primary text-2xl mr-2"></i>
+                <h1 class="text-xl font-bold text-dark">小羊和小杜的南京之约</h1>
+            </div>
+            <button class="md:hidden text-dark text-xl" id="menu-toggle">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <nav class="hidden md:flex space-x-2" id="main-nav">
+                <a href="#overview" class="nav-link active">
+                    <i class="fa-solid fa-map-marker-alt mr-2"></i>行程概览
+                </a>
+                <a href="#budget" class="nav-link">
+                    <i class="fa-solid fa-wallet mr-2"></i>预算计算
+                </a>
+                <a href="#reminders" class="nav-link">
+                    <i class="fa-solid fa-bell mr-2"></i>景点提醒
+                </a>
+                <a href="#transport" class="nav-link">
+                    <i class="fa-solid fa-subway mr-2"></i>交通规划
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 移动端侧边栏 -->
+    <div class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden" id="sidebar-overlay">
+        <div class="fixed top-0 left-0 w-64 h-full bg-white shadow-lg transform -translate-x-full transition-transform duration-300" id="sidebar">
+            <div class="p-4 border-b">
+                <div class="flex justify-between items-center">
+                    <h2 class="font-bold text-dark">导航菜单</h2>
+                    <button id="close-sidebar" class="text-dark">
+                        <i class="fa-solid fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <nav class="p-4">
+                <a href="#overview" class="block nav-link active">
+                    <i class="fa-solid fa-map-marker-alt mr-2"></i>行程概览
+                </a>
+                <a href="#budget" class="block nav-link">
+                    <i class="fa-solid fa-wallet mr-2"></i>预算计算
+                </a>
+                <a href="#reminders" class="block nav-link">
+                    <i class="fa-solid fa-bell mr-2"></i>景点提醒
+                </a>
+                <a href="#transport" class="block nav-link">
+                    <i class="fa-solid fa-subway mr-2"></i>交通规划
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- 英雄区域 -->
+    <section class="nj-hero h-48 md:h-64 flex items-center justify-center relative">
+        <div class="absolute inset-0 bg-dark bg-opacity-40"></div>
+        <div class="container mx-auto px-4 relative z-10 text-center">
+            <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-white mb-2">南京之约</h1>
+            <p class="text-[clamp(1rem,2vw,1.25rem)] text-white/90">2025.8.3-8.6 · 小羊 & 小杜</p>
+            <div class="flex justify-center mt-4 space-x-2">
+                <i class="fa-solid fa-map-marker-alt text-primary text-xl"></i>
+                <i class="fa-solid fa-heart text-primary text-xl"></i>
+                <i class="fa-solid fa-camera text-primary text-xl"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- 主内容区域 -->
+    <main class="container mx-auto px-4 pt-6 pb-16">
+        <!-- 旅行基本信息 -->
+        <section class="bg-white rounded-xl shadow-lg p-6 mb-8 transform transition-all duration-500 hover:shadow-xl">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <div class="mb-4 md:mb-0">
+                    <h2 class="text-2xl font-bold text-dark mb-2">南京之旅 <span class="text-primary">2025.8.3-8.6</span></h2>
+                    <div class="flex items-center text-dark/80">
+                        <i class="fa-solid fa-hotel mr-2"></i>
+                        <span>住宿: 玄武区小市地铁站旁 汉庭酒店</span>
+                    </div>
+                    <div class="flex items-center text-dark/80 mt-1">
+                        <i class="fa-solid fa-users mr-2"></i>
+                        <span>出行人数: 小羊和小杜</span>
+                    </div>
+                    <div class="flex items-center text-dark/80 mt-1">
+                        <i class="fa-solid fa-plane-arrival mr-2"></i>
+                        <span>抵达时间: 8月3日 下午2点</span>
+                    </div>
+                    <div class="flex items-center text-dark/80 mt-1">
+                        <i class="fa-solid fa-utensils mr-2"></i>
+                        <span>饮食预算: 200元/天(两人)</span>
+                    </div>
+                </div>
+                <div class="bg-light p-4 rounded-lg border border-primary/20">
+                    <h3 class="font-bold text-primary mb-2">距离旅行还有</h3>
+                    <div id="countdown" class="text-3xl font-bold text-dark flex justify-center">
+                        <span id="days">00</span>
+                        <span class="mx-2">:</span>
+                        <span id="hours">00</span>
+                        <span class="mx-2">:</span>
+                        <span id="minutes">00</span>
+                        <span class="mx-2">:</span>
+                        <span id="seconds">00</span>
+                    </div>
+                    <div class="text-center text-sm text-dark/70 mt-1">天 : 时 : 分 : 秒</div>
+                </div>
+            </div>
+
+            <!-- 南京特色元素 -->
+            <div class="mt-6 pt-6 border-t border-gray-100">
+                <h3 class="text-lg font-bold text-dark mb-4 flex items-center">
+                    <i class="fa-solid fa-star text-njGold mr-2"></i>南京特色元素
+                </h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <div class="bg-light p-3 rounded-lg text-center">
+                        <i class="fa-solid fa-utensils text-2xl nj-icon mb-2"></i>
+                        <p class="text-dark">鸭血粉丝汤</p>
+                    </div>
+                    <div class="bg-light p-3 rounded-lg text-center">
+                        <i class="fa-solid fa-landmark text-2xl nj-icon mb-2"></i>
+                        <p class="text-dark">明城墙</p>
+                    </div>
+                    <div class="bg-light p-3 rounded-lg text-center">
+                        <i class="fa-solid fa-tree text-2xl nj-icon mb-2"></i>
+                        <p class="text-dark">梧桐树</p>
+                    </div>
+                    <div class="bg-light p-3 rounded-lg text-center">
+                        <i class="fa-solid fa-building-columns text-2xl nj-icon mb-2"></i>
+                        <p class="text-dark">夫子庙</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 行程概览 -->
+        <section id="overview" class="mb-8">
+            <div class="flex items-center mb-6">
+                <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center mr-3">
+                    <i class="fa-solid fa-map text-white"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-dark">行程概览</h2>
+            </div>
+
+            <!-- 第一天 -->
+            <div class="day-card">
+                <div class="day-header">
+                    <div class="day-number">1</div>
+                    <div class="day-title">Day 1 · 8月3日（周日）</div>
+                </div>
+                <div class="activity">
+                    <div class="activity-time">下午</div>
+                    <div class="activity-desc">抵达南京南站→小市地铁站→酒店入住；简餐休整。</div>
+                </div>
+                <div class="activity">
+                    <div class="activity-time">下午</div>
+                    <div class="activity-desc">玄武湖散步拍照→先锋书店五台山店打卡。</div>
+                </div>
+                <div class="activity">
+                    <div class="activity-time">晚上</div>
+                    <div class="activity-desc">夫子庙秦淮河灯景夜游（不划船）。</div>
+                </div>
+                <div class="flex justify-end mt-4">
+                    <button class="btn-primary" onclick="toggleDayDetails('day1')">
+                        <i class="fa-solid fa-info-circle mr-2"></i>详情
+                    </button>
+                </div>
+                <div id="day1" class="hidden mt-4 p-4 bg-light rounded-lg border border-primary/20">
+                    <div class="text-dark">
+                        <h4 class="font-bold mb-2">景点详情</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3">
+                            <div class="nj-card">
+                                <img src="https://picsum.photos/id/1037/300/200" alt="玄武湖" class="w-full h-40 object-cover">
+                                <div class="p-3">
+                                    <h5 class="font-bold">玄武湖</h5>
+                                    <p class="text-sm">南京最大的城内公园，可散步欣赏湖景，拍照留念。</p>
+                                </div>
+                            </div>
+                            <div class="nj-card">
+                                <img src="https://picsum.photos/id/1067/300/200" alt="先锋书店" class="w-full h-40 object-cover">
+                                <div class="p-3">
+                                    <h5 class="font-bold">先锋书店</h5>
+                                    <p class="text-sm">南京著名的独立书店，文艺青年必打卡地。</p>
+                                </div>
+                            </div>
+                            <div class="nj-card">
+                                <img src="https://picsum.photos/id/1019/300/200" alt="夫子庙秦淮河" class="w-full h-40 object-cover">
+                                <div class="p-3">
+                                    <h5 class="font-bold">夫子庙秦淮河</h5>
+                                    <p class="text-sm">晚上灯光绚丽，可以感受南京的历史文化氛围。</p>
+                                </div>
+                            </div>
+                        </div>
+                        <h4 class="font-bold mb-2">交通建议</h4>
+                        <p>南京南站到酒店可乘坐地铁3号线至小市站，约20分钟。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 第二天 -->
+            <div class="day-card">
+                <div class="day-header">
+                    <div class="day-number">2</div>
+                    <div class="day-title">Day 2 · 8月4日（周一）</div>
+                </div>
+                <div class="activity">
+                    <div class="activity-time">上午</div>
+                    <div class="activity-desc">红山森林动物园（8:30前入园，学生票40元/人，3-4小时）。</div>
+                </div>
+                <div class="activity">
+                    <div class="activity-time">中午</div>
+                    <div class="activity-desc">园区外简餐或带点心。</div>
+                </div>
+                <div class="activity">
+                    <div class="activity-time">下午</div>
+                    <div class="activity-desc">梧桐大道漫步→先锋书店南图店。</div>
+                </div>
+                <div class="activity">
+                    <div class="activity-time">晚上</div>
+                    <div class="activity-desc">酒店附近轻松晚餐。</div>
+                </div>
+                <div class="flex justify-end mt-4">
+                    <button class="btn-primary" onclick="toggleDayDetails('day2')">
+                        <i class="fa-solid fa-info-circle mr-2"></i>详情
+                    </button>
+                </div>
+                <div id="day2" class="hidden mt-4 p-4 bg-light rounded-lg border border-primary/20">
+                    <div class="text-dark">
+                        <h4 class="font-bold mb-2">景点详情</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3">
+                            <div class="nj-card">
+                                <img src="https://picsum.photos/id/1062/300/200" alt="红山森林动物园" class="w-full h-40 object-cover">
+                                <div class="p-3">
+                                    <h5 class="font-bold">红山森林动物园</h5>
+                                    <p class="text-sm">环境优美，动物种类丰富，适合早上去游玩。</p>
+                                </div>
+                            </div>
+                            <div class="nj-card">
+                                <img src="https://picsum.photos/id/1040/300/200" alt="梧桐大道" class="w-full h-40 object-cover">
+                                <div class="p-3">
+                                    <h5 class="font-bold">梧桐大道</h5>
+                                    <p class="text-sm">南京特色街道，夏季绿树成荫，非常适合散步。</p>
+                                </div>
+                            </div>
+                            <div class="nj-card">
+                                <img src="https://picsum.photos/id/1060/300/200" alt="先锋书店南图店" class="w-full h-40 object-cover">
+                                <div class="p-3">
+                                    <h5 class="font-bold">先锋书店南图店</h5>
+                                    <p class="text-sm">位于南京图书馆内，氛围安静，适合阅读和休息。</p>
+                                </div>
+                            </div>
+                        </div>
+                        <h4 class="font-bold mb-2">门票提醒</h4>
+                        <p>红山森林动物园学生票40元/人，请提前准备好学生证。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 第三天 -->
+            <div class="day-card">
+                <div class="day-header">
+                    <div class="day-number">3</div>
+                    <div class="day-title">Day 3 · 8月5日（周二）</div>
+                </div>
+                <div class="activity">
+                    <div class="activity-time">上午</div>
+                    <div class="activity-desc">总统府参观（预约，票价35元/人）。</div>
+                </div>
+                <div class="activity">
+                    <div class="activity-time">中午</div>
+                    <div class="activity-desc">附近用餐（鸭血粉丝汤、盐水鸭等）。</div>
+                </div>
+                <div class="activity">
+                    <div class="activity-time">下午</div>
+                    <div class="activity-desc">南京博物院参观（免费，周一闭馆，建议预约），避暑又有文化气息。</div>
+                </div>
+                <div class="activity">
+                    <div class="activity-time">傍晚</div>
+                    <div class="activity-desc">南京大屠杀纪念馆（免费，17:30闭馆）。</div>
+                </div>
+                <div class="activity">
+                    <div class="activity-time">晚上</div>
+                    <div class="activity-desc">玄武湖边散步或酒店休息。</div>
+                </div>
+                <div class="flex justify-end mt-4">
+                    <button class="btn-primary" onclick="toggleDayDetails('day3')">
+                        <i class="fa-solid fa-info-circle mr-2"></i>详情
+                    </button>
+                </div>
+                <div id="day3" class="hidden mt-4 p-4 bg-light rounded-lg border border-primary/20">
+                    <div class="text-dark">
+                        <h4 class="font-bold mb-2">景点详情</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3">
+                            <div class="nj-card">
+                                <img src="https://picsum.photos/id/1071/300/200" alt="总统府" class="w-full h-40 object-cover">
+                                <div class="p-3">
+                                    <h5 class="font-bold">总统府</h5>
+                                    <p class="text-sm">中国近代历史的重要遗址，保存完好的民国建筑。</p>
+                                </div>
+                            </div>
+                            <div class="nj-card">
+                                <img src="https://picsum.photos/id/1080/300/200" alt="南京博物院" class="w-full h-40 object-cover">
+                                <div class="p-3">
+                                    <h5 class="font-bold">南京博物院</h5>
+                                    <p class="text-sm">中国三大博物馆之一，免费开放但需提前预约。</p>
+                                </div>
+                            </div>
+                            <div class="nj-card">
+                                <img src="https://picsum.photos/id/1068/300/200" alt="南京大屠杀纪念馆" class="w-full h-40 object-cover">
+                                <div class="p-3">
+                                    <h5 class="font-bold">南京大屠杀纪念馆</h5>
+                                    <p class="text-sm">纪念二战期间南京大屠杀的遇难者，需保持肃穆。</p>
+                                </div>
+                            </div>
+                        </div>
+                        <h4 class="font-bold mb-2">预约提醒</h4>
+                        <p>总统府和南京博物院均需提前预约，请记得在官方网站或小程序上预约。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 第四天 -->
+            <div class="day-card">
+                <div class="day-header">
+                    <div class="day-number">4</div>
+                    <div class="day-title">Day 4 · 8月6日（周三）</div>
+                </div>
+                <div class="activity">
+                    <div class="activity-time">上午</div>
+                    <div class="activity-desc">可选去鸡鸣寺参拜（10元）或再次前往南京博物院回味展览。</div>
+                </div>
+                <div class="activity">
+                    <div class="activity-time">中午</div>
+                    <div class="activity-desc">简餐后回酒店收拾行李→地铁返程南京南站。</div>
+                </div>
+                <div class="flex justify-end mt-4">
+                    <button class="btn-primary" onclick="toggleDayDetails('day4')">
+                        <i class="fa-solid fa-info-circle mr-2"></i>详情
+                    </button>
+                </div>
+                <div id="day4" class="hidden mt-4 p-4 bg-light rounded-lg border border-primary/20">
+                    <div class="text-dark">
+                        <h4 class="font-bold mb-2">景点详情</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                            <div class="nj-card">
+                                <img src="https://picsum.photos/id/1073/300/200" alt="鸡鸣寺" class="w-full h-40 object-cover">
+                                <div class="p-3">
+                                    <h5 class="font-bold">鸡鸣寺</h5>
+                                    <p class="text-sm">南京最古老的梵刹之一，香火旺盛，门票10元。</p>
+                                </div>
+                            </div>
+                            <div class="nj-card">
+                                <img src="https://picsum.photos/id/1080/300/200" alt="南京博物院" class="w-full h-40 object-cover">
+                                <div class="p-3">
+                                    <h5 class="font-bold">南京博物院</h5>
+                                    <p class="text-sm">如果前一天时间不够，可以再次参观。</p>
+                                </div>
+                            </div>
+                        </div>
+                        <h4 class="font-bold mb-2">返程提醒</h4>
+                        <p>请提前收拾好行李，预留足够的时间前往南京南站，避免耽误返程。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 预算计算 -->
+        <section id="budget" class="mb-8">
+            <div class="flex items-center mb-6">
+                <div class="w-10 h-10 rounded-full bg-secondary flex items-center justify-center mr-3">
+                    <i class="fa-solid fa-calculator text-white"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-dark">预算计算</h2>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-6 transform transition-all duration-500 hover:shadow-xl">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="text-lg font-bold text-dark mb-4">预算明细（两人，不含住宿）</h3>
+                        <div class="budget-item">
+                            <span class="budget-label">红山动物园门票</span>
+                            <span class="budget-amount text-primary">80元</span>
+                        </div>
+                        <div class="budget-item">
+                            <span class="budget-label">总统府门票</span>
+                            <span class="budget-amount text-primary">70元</span>
+                        </div>
+                        <div class="budget-item">
+                            <span class="budget-label">鸡鸣寺门票（可选）</span>
+                            <input type="checkbox" id="jiming-temple" class="ml-2" checked onchange="calculateTotal()">
+                            <span class="budget-amount text-primary" id="jiming-temple-amount">20元</span>
+                        </div>
+                        <div class="budget-item">
+                            <span class="budget-label">地铁交通</span>
+                            <span class="budget-amount text-primary">100元</span>
+                        </div>
+                        <div class="budget-item">
+                            <span class="budget-label">餐饮预算</span>
+                            <span class="budget-amount text-primary">800元</span>
+                        </div>
+                        <div class="budget-item">
+                            <span class="budget-label">其他</span>
+                            <span class="budget-amount text-primary">100元</span>
+                        </div>
+                        <div class="budget-item border-b-0">
+                            <span class="budget-label font-bold">合计</span>
+                            <span class="budget-amount text-primary text-xl font-bold" id="total-amount">1170元</span>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-dark mb-4">自定义预算</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-dark mb-1">餐饮预算（元/天）</label>
+                                <input type="number" id="food-budget" value="200" min="0" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                            </div>
+                            <div>
+                                <label class="block text-dark mb-1">交通预算（元）</label>
+                                <input type="number" id="transport-budget" value="100" min="0" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                            </div>
+                            <div>
+                                <label class="block text-dark mb-1">其他预算（元）</label>
+                                <input type="number" id="other-budget" value="100" min="0" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                            </div>
+                            <button class="btn-secondary w-full" onclick="updateBudget()">
+                                <i class="fa-solid fa-refresh mr-2"></i>更新预算
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 南京特色美食预算 -->
+                <div class="mt-8 pt-8 border-t border-gray-100">
+                    <h3 class="text-lg font-bold text-dark mb-4 flex items-center">
+                        <i class="fa-solid fa-utensils text-njGold mr-2"></i>南京特色美食预算
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-light p-4 rounded-lg">
+                            <h4 class="font-bold text-dark mb-2">鸭血粉丝汤</h4>
+                            <div class="flex justify-between">
+                                <span class="text-dark/80">推荐店铺: 金源鸭血粉丝汤</span>
+                                <span class="text-primary font-medium">约40元</span>
+                            </div>
+                        </div>
+                        <div class="bg-light p-4 rounded-lg">
+                            <h4 class="font-bold text-dark mb-2">盐水鸭</h4>
+                            <div class="flex justify-between">
+                                <span class="text-dark/80">推荐店铺: 章云板鸭</span>
+                                <span class="text-primary font-medium">约80元</span>
+                            </div>
+                        </div>
+                        <div class="bg-light p-4 rounded-lg">
+                            <h4 class="font-bold text-dark mb-2">汤包</h4>
+                            <div class="flex justify-between">
+                                <span class="text-dark/80">推荐店铺: 鸡鸣汤包</span>
+                                <span class="text-primary font-medium">约30元</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 景点提醒 -->
+        <section id="reminders" class="mb-8">
+            <div class="flex items-center mb-6">
+                <div class="w-10 h-10 rounded-full bg-accent flex items-center justify-center mr-3">
+                    <i class="fa-solid fa-bell text-white"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-dark">景点提醒</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="reminder">
+                    <h3 class="font-bold text-dark mb-2">闭馆信息</h3>
+                    <ul class="list-disc pl-5 text-dark">
+                        <li>总统府、南京博物院、纪念馆周一闭馆</li>
+                        <li>红山动物园每日开放</li>
+                        <li>先锋书店各分店周一正常营业</li>
+                    </ul>
+                </div>
+                <div class="reminder">
+                    <h3 class="font-bold text-dark mb-2">预约提醒</h3>
+                    <ul class="list-disc pl-5 text-dark">
+                        <li>总统府需提前预约，票价35元/人</li>
+                        <li>南京博物院免费，但建议提前预约</li>
+                        <li>红山森林动物园建议8:30前入园</li>
+                    </ul>
+                </div>
+                <div class="reminder">
+                    <h3 class="font-bold text-dark mb-2">行前准备</h3>
+                    <ul class="list-disc pl-5 text-dark">
+                        <li>证件类：身份证、学生证（购买优惠票用）</li>
+                        <li>衣物：夏季衣物，建议携带轻便外套以防早晚温差</li>
+                        <li>物品：雨伞、防晒霜、舒适的步行鞋、充电器、移动电源</li>
+                        <li>电子设备：手机、相机、耳机等</li>
+                        <li>药品：感冒药、退烧药、肠胃药、晕车药等常用药品</li>
+                        <li>其他：水杯、背包、随身小包、纸巾等</li>
+                    </ul>
+                </div>
+                <div class="reminder">
+                    <h3 class="font-bold text-dark mb-2">注意事项</h3>
+                    <ul class="list-disc pl-5 text-dark">
+                        <li>南京夏季气温较高，注意防暑降温</li>
+                        <li>参观南京大屠杀纪念馆时，请保持肃穆</li>
+                        <li>建议提前下载"Metro大都会"APP，方便乘坐地铁</li>
+                        <li>品尝南京特色美食时，可尝试多家店铺比较口味</li>
+                        <li>保管好个人财物，特别是在人多拥挤的地方</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 交通规划 -->
+        <section id="transport" class="mb-8">
+            <div class="flex items-center mb-6">
+                <div class="w-10 h-10 rounded-full bg-njBlue flex items-center justify-center mr-3">
+                    <i class="fa-solid fa-subway text-white"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-dark">交通规划</h2>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-6 transform transition-all duration-500 hover:shadow-xl">
+                <h3 class="text-lg font-bold text-dark mb-4">主要交通方式</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div class="bg-light p-4 rounded-lg">
+                        <h4 class="font-bold text-dark mb-2 flex items-center">
+                            <i class="fa-solid fa-subway text-njBlue mr-2"></i>地铁
+                        </h4>
+                        <p class="text-dark">南京地铁较为发达，覆盖了大部分景点。建议下载"Metro大都会"APP，扫码乘车。</p>
+                        <div class="mt-2">
+                            <span class="bg-njBlue text-white px-2 py-1 rounded text-sm">1号线</span>
+                            <span class="bg-njRed text-white px-2 py-1 rounded text-sm ml-1">2号线</span>
+                            <span class="bg-green-600 text-white px-2 py-1 rounded text-sm ml-1">3号线</span>
+                            <span class="bg-purple-600 text-white px-2 py-1 rounded text-sm ml-1">4号线</span>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-light p-4 rounded-lg">
+                        <h4 class="font-bold text-dark mb-2 flex items-center">
+                            <i class="fa-solid fa-bus text-njGold mr-2"></i>公交
+                        </h4>
+                        <p class="text-dark">公交线路覆盖广泛，但部分线路可能较拥挤。可使用支付宝或微信搜索"南京公交"乘车码。</p>
+                    </div>
+                </div>
+                
+                <h3 class="text-lg font-bold text-dark mb-4">主要行程交通</h3>
+                
+                <div class="space-y-4">
+                    <div class="border-l-4 border-njBlue pl-4 py-2">
+                        <h4 class="font-bold text-dark">南京南站 → 酒店</h4>
+                        <p class="text-dark">地铁3号线（南京南站→小市站），约20分钟，票价4元。</p>
+                    </div>
+                    
+                    <div class="border-l-4 border-njBlue pl-4 py-2">
+                        <h4 class="font-bold text-dark">酒店 → 红山森林动物园</h4>
+                        <p class="text-dark">地铁1号线（小市站→红山动物园站），约10分钟，票价2元。</p>
+                    </div>
+                    
+                    <div class="border-l-4 border-njBlue pl-4 py-2">
+                        <h4 class="font-bold text-dark">酒店 → 总统府</h4>
+                        <p class="text-dark">地铁3号线（小市站→大行宫站），约15分钟，票价3元。</p>
+                    </div>
+                    
+                    <div class="border-l-4 border-njBlue pl-4 py-2">
+                        <h4 class="font-bold text-dark">总统府 → 南京博物院</h4>
+                        <p class="text-dark">步行约15分钟，或乘坐公交34路（总统府站→中山门站）。</p>
+                    </div>
+                    
+                    <div class="border-l-4 border-njBlue pl-4 py-2">
+                        <h4 class="font-bold text-dark">酒店 → 南京大屠杀纪念馆</h4>
+                        <p class="text-dark">地铁4号线（小市站→龙江站）转2号线（龙江站→云锦路站），约25分钟，票价4元。</p>
+                    </div>
+                    
+                    <div class="border-l-4 border-njBlue pl-4 py-2">
+                        <h4 class="font-bold text-dark">酒店 → 南京南站</h4>
+                        <p class="text-dark">地铁3号线（小市站→南京南站），约20分钟，票价4元。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white py-10 nj-footer">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">小羊和小杜的南京之约</h3>
+                    <p class="text-white/70">2025年8月3日-8月6日</p>
+                    <div class="flex space-x-4 mt-4">
+                        <a href="#" class="text-white hover:text-primary transition-colors">
+                            <i class="fa-brands fa-weixin text-xl"></i>
+                        </a>
+                        <a href="#" class="text-white hover:text-primary transition-colors">
+                            <i class="fa-brands fa-weibo text-xl"></i>
+                        </a>
+                        <a href="#" class="text-white hover:text-primary transition-colors">
+                            <i class="fa-brands fa-instagram text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">行程导航</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#overview" class="text-white/70 hover:text-primary transition-colors">行程概览</a></li>
+                        <li><a href="#budget" class="text-white/70 hover:text-primary transition-colors">预算计算</a></li>
+                        <li><a href="#reminders" class="text-white/70 hover:text-primary transition-colors">景点提醒</a></li>
+                        <li><a href="#transport" class="text-white/70 hover:text-primary transition-colors">交通规划</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">南京旅游</h3>
+                    <p class="text-white/70">南京，简称"宁"，古称金陵、建康，是中国四大古都之一，有"六朝古都"、"十朝都会"之称。</p>
+                    <p class="text-white/70 mt-2">欢迎来到南京，祝您旅途愉快！</p>
+                </div>
+            </div>
+            <div class="border-t border-white/20 mt-8 pt-8 text-center text-white/50">
+                <p>© 2025 小羊和小杜的南京之约 · 旅行计划</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 倒计时功能
+        function updateCountdown() {
+            // 设置旅行日期（2025年8月3日）
+            const travelDate = new Date("2025-08-03T14:00:00").getTime();
+            
+            // 获取当前日期和时间
+            const now = new Date().getTime();
+            
+            // 计算剩余时间
+            const distance = travelDate - now;
+            
+            // 时间计算
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            // 显示结果
+            document.getElementById("days").innerText = String(days).padStart(2, '0');
+            document.getElementById("hours").innerText = String(hours).padStart(2, '0');
+            document.getElementById("minutes").innerText = String(minutes).padStart(2, '0');
+            document.getElementById("seconds").innerText = String(seconds).padStart(2, '0');
+            
+            // 如果旅行日期已过，显示0
+            if (distance < 0) {
+                clearInterval(x);
+                document.getElementById("days").innerText = "00";
+                document.getElementById("hours").innerText = "00";
+                document.getElementById("minutes").innerText = "00";
+                document.getElementById("seconds").innerText = "00";
+            }
+        }
+        
+        // 立即更新一次倒计时
+        updateCountdown();
+        
+        // 每秒更新一次
+        const x = setInterval(updateCountdown, 1000);
+
+        // 显示/隐藏行程详情
+        function toggleDayDetails(dayId) {
+            const element = document.getElementById(dayId);
+            element.classList.toggle('hidden');
+        }
+
+        // 计算总预算
+        function calculateTotal() {
+            const jimingTempleChecked = document.getElementById('jiming-temple').checked;
+            const jimingTempleAmount = jimingTempleChecked ? 20 : 0;
+            
+            // 其他固定费用
+            const fixedExpenses = 80 + 70 + 100 + 800 + 100;
+            
+            // 计算总费用
+            const total = fixedExpenses + jimingTempleAmount;
+            
+            // 更新显示
+            document.getElementById('total-amount').innerText = total + '元';
+        }
+
+        // 更新预算
+        function updateBudget() {
+            const foodBudget = parseInt(document.getElementById('food-budget').value) || 0;
+            const transportBudget = parseInt(document.getElementById('transport-budget').value) || 0;
+            const otherBudget = parseInt(document.getElementById('other-budget').value) || 0;
+            
+            // 其他固定费用
+            const tickets = 80 + 70; // 红山动物园和总统府
+            const jimingTempleChecked = document.getElementById('jiming-temple').checked;
+            const jimingTempleAmount = jimingTempleChecked ? 20 : 0;
+            
+            // 计算总费用（餐饮按3天计算）
+            const total = tickets + jimingTempleAmount + transportBudget + (foodBudget * 3) + otherBudget;
+            
+            // 更新显示
+            document.getElementById('total-amount').innerText = total + '元';
+        }
+
+        // 移动端菜单切换
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            document.getElementById('sidebar-overlay').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('sidebar').classList.remove('-translate-x-full');
+            }, 10);
+        });
+
+        document.getElementById('close-sidebar').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.add('-translate-x-full');
+            setTimeout(() => {
+                document.getElementById('sidebar-overlay').classList.add('hidden');
+            }, 300);
+        });
+
+        // 点击侧边栏外部关闭菜单
+        document.getElementById('sidebar-overlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                document.getElementById('sidebar').classList.add('-translate-x-full');
+                setTimeout(() => {
+                    document.getElementById('sidebar-overlay').classList.add('hidden');
+                }, 300);
+            }
+        });
+
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('py-2');
+                navbar.classList.remove('py-3');
+            } else {
+                navbar.classList.add('py-3');
+                navbar.classList.remove('py-2');
+            }
+        });
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    // 关闭侧边栏（如果打开）
+                    document.getElementById('sidebar').classList.add('-translate-x-full');
+                    setTimeout(() => {
+                        document.getElementById('sidebar-overlay').classList.add('hidden');
+                    }, 300);
+                    
+                    // 平滑滚动到目标位置
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // 更新活动导航项
+                    document.querySelectorAll('.nav-link').forEach(link => {
+                        link.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>    
